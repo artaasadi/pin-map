@@ -1,6 +1,7 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+import MyMap from './components/MyMap';
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
           <Route path="/" exact/>
         </Routes>
       </Router>
-      <h1>HELLLOOO</h1>
+      <MyMap />
     </>
   );
 }
