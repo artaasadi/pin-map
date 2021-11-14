@@ -1,7 +1,8 @@
 import './App.css';
 import Navbar from './components/Navbar';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import MyMap from './components/MyMap';
+import MyMap from './components/MyMap2';
+import 'leaflet/dist/leaflet.css'
 
 function App() {
   return (
@@ -12,7 +13,10 @@ function App() {
           <Route path="/" exact/>
         </Routes>
       </Router>
-      <MyMap />
+      <div style={{flex:1, height:'100vh'}}>
+        <MyMap />
+      </div>
+      
     </>
   );
 }
