@@ -1,10 +1,23 @@
 import './App.css';
+import React, {useState} from 'react';
 import Navbar from './components/Navbar';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import MyMap from './components/MyMap2';
-import 'leaflet/dist/leaflet.css'
+import MyMap from './components/MyMap';
 
 function App() {
+  /*const express = require("express")
+  const app = express()
+  const cors = require('cors')
+  const corsOptions ={
+    origin:'http://localhost:3000',
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+  }
+  app.use(cors(corsOptions));*/
+  const [location, setLocation] = useState(require(".\\components\\img\\img.png").default);
+  const setData = (data) => {
+    setLocation(data);
+  };
   return (
     <>
       <Router>
@@ -13,8 +26,16 @@ function App() {
           <Route path="/" exact/>
         </Routes>
       </Router>
-      <div style={{flex:1, height:'100vh'}}>
-        <MyMap />
+      <div style={{width:'100%'}}>
+        <div style={{float:'left',width:'25%', color:'#FFF'}}>
+          <div style={{float:'top', width:'100%'}}>
+            <img src={(location)} style={{width:'100%'}}/>
+            <p style={{color:"#000"}}>{location}</p>
+          </div>
+        </div>
+        <div style={{float:'left',width:'75%',height:'100vh'}}>
+          <MyMap returnData = {setData}/>
+        </div>
       </div>
       
     </>

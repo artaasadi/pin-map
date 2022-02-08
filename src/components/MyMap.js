@@ -1,26 +1,84 @@
 import React, {useState} from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import {Map, Marker} from 'pigeon-maps';
+import AWS from 'aws-sdk';
+import RNFetchBlob from "rn-fetch-blob";
 
+function MyMap(props) {
+    const [center, setCenter] = useState([35.6892, 51.3890]);
+    const [zoom, setZoom] = useState(11);
+    const [hue, setHue] = useState(0);
+    const color = `hsl(${hue % 360}deg 39% 70%)`;
+    const config = {
+        'accessKeyId' : 'd38c5e13-0042-4fe9-8f83-43bb4c108527',
+        'secretAccessKey' : 'ae4b2d1247d49f92612b75ff970016c78b46f70562a4f355fdacf79e60b026a0',
+        'endpoint' : 'https://s3.ir-thr-at1.arvanstorage.com/',
+    }
+    function downloadFile(url,fileName) {
+        const { config, fs } = RNFetchBlob;
+        const downloads = fs.dirs.DownloadDir;
+        return config({
+            // add this option that makes response data to be stored as a file,
+            // this is much more performant.
+            fileCache : true,
+            addAndroidDownloads : {
+                useDownloadManager : true,
+                notification : false,
+                path:  downloads + '/' + fileName + '.pdf',
+            }
+        })
+            .fetch('GET', url);
+    }
+    AWS.config.update(config);
+    const downloader = (pic_name) => {
+        const s3 = new AWS.S3();
+        const params = {
+            Bucket: 'fardin',
+            Key: `out/${pic_name}.jpg`,
+        };
 
-function MyMap() {
+        s3.getSignedUrl('getObject', params, function (err, url) {
+            console.log('Your generated pre-signed URL is', url);
+            const address = `.\\img\\${pic_name}.jpg`;
+            downloadFile(url, address)
+            props.returnData(require(address).default)
+        });
+    }
     return (
-        <MapContainer 
-        center={[35.6892, 51.3890]} 
-        zoom={13} scrollWheelZoom={true}
-        style={{height:500, width:"100%"}}
-        
+        <Map 
+        width={'100%'}
+        height={'100%'}
+        center={center} 
+        zoom={zoom} 
+        onBoundsChanged={({ center, zoom }) => {
+            setCenter(center) 
+            setZoom(zoom) 
+        }} 
         >
-            <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            <Marker 
+                width={25}
+                anchor={[35.6892, 51.3890]} 
+                color={color} 
+                onClick={() => props.returnData(require(".\\img\\img_girl2.jpg").default)}
             />
-            <Marker position={[35.6892, 51.3890]}>
-                <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-            </Marker>
-        </MapContainer>
+            <Marker
+                width={25}
+                anchor={[35.7492, 51.4390]}
+                color={color}
+                onClick={() => {
+                    downloader("2021_10_11__13_57_55");
+                    props.returnData(require(".\\img\\img1.png").default)
+                }}
+            />
+            <Marker
+                width={25}
+                anchor={[35.6492, 51.2990]}
+                color={color}
+                onClick={() => {
+                    downloader("2021_10_11__14_0_25");
+
+                }}
+            />
+        </Map>
     )
 }
 
