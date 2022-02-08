@@ -5,15 +5,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import MyMap from './components/MyMap';
 
 function App() {
-  /*const express = require("express")
-  const app = express()
-  const cors = require('cors')
-  const corsOptions ={
-    origin:'http://localhost:3000',
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
-  }
-  app.use(cors(corsOptions));*/
+
   const [location, setLocation] = useState(require(".\\components\\img\\img.png").default);
   const setData = (data) => {
     setLocation(data);

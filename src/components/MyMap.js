@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Map, Marker} from 'pigeon-maps';
 import AWS from 'aws-sdk';
-import RNFetchBlob from "rn-fetch-blob";
+import { saveAs } from "file-saver";
 
 function MyMap(props) {
     const [center, setCenter] = useState([35.6892, 51.3890]);
@@ -14,19 +14,10 @@ function MyMap(props) {
         'endpoint' : 'https://s3.ir-thr-at1.arvanstorage.com/',
     }
     function downloadFile(url,fileName) {
-        const { config, fs } = RNFetchBlob;
-        const downloads = fs.dirs.DownloadDir;
-        return config({
-            // add this option that makes response data to be stored as a file,
-            // this is much more performant.
-            fileCache : true,
-            addAndroidDownloads : {
-                useDownloadManager : true,
-                notification : false,
-                path:  downloads + '/' + fileName + '.pdf',
-            }
-        })
-            .fetch('GET', url);
+        saveAs(
+            url,
+            fileName
+        );
     }
     AWS.config.update(config);
     const downloader = (pic_name) => {
@@ -35,12 +26,12 @@ function MyMap(props) {
             Bucket: 'fardin',
             Key: `out/${pic_name}.jpg`,
         };
-
-        s3.getSignedUrl('getObject', params, function (err, url) {
+        s3.getObject(params, function (err, url) {
             console.log('Your generated pre-signed URL is', url);
-            const address = `.\\img\\${pic_name}.jpg`;
-            downloadFile(url, address)
-            props.returnData(require(address).default)
+            //const address = `.\\img\\${pic_name}.jpg`;
+            //downloadFile(url, pic_name)
+
+            //props.returnData(require(address).default)
         });
     }
     return (
