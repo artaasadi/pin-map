@@ -6,7 +6,7 @@ import MyMap from './components/MyMap';
 
 function App() {
 
-  const [location, setLocation] = useState(require(".\\components\\img\\img.png").default);
+  const [location, setLocation] = useState(require("./components/img/img.png"));
   const setData = (data) => {
     setLocation(data);
   };

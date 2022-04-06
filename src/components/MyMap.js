@@ -11,7 +11,7 @@ function MyMap(props) {
     const config = {
         'accessKeyId' : 'd38c5e13-0042-4fe9-8f83-43bb4c108527',
         'secretAccessKey' : 'ae4b2d1247d49f92612b75ff970016c78b46f70562a4f355fdacf79e60b026a0',
-        'endpoint' : 'https://s3.ir-thr-at1.arvanstorage.com/',
+        'endpoint' : 'https://s3.ir-thr-at1.arvanstorage.com',
     }
     function downloadFile(url,fileName) {
         saveAs(
@@ -19,20 +19,30 @@ function MyMap(props) {
             fileName
         );
     }
+
     AWS.config.update(config);
     const downloader = (pic_name) => {
         const s3 = new AWS.S3();
         const params = {
-            Bucket: 'fardin',
-            Key: `out/${pic_name}.jpg`,
+            Bucket: 'aaic',
+            Key: `${pic_name}.jpg`,
         };
-        s3.getObject(params, function (err, url) {
-            console.log('Your generated pre-signed URL is', url);
-            //const address = `.\\img\\${pic_name}.jpg`;
+        const address = `./img/${pic_name}.jpg`;
+        s3.getObject(params, function (err, data) {
+            if (err != null) {
+                console.log('error :', err)
+            }
             //downloadFile(url, pic_name)
-
+            console.log(data);
+            let blob=new Blob([data.Body], {type: data.ContentType});
+            let link=document.createElement('a');
+            link.href=window.URL.createObjectURL(blob);
+            link.download=address;
+            link.dir=address;
+            link.click();
             //props.returnData(require(address).default)
-        });
+        })
+
     }
     return (
         <Map 
@@ -49,7 +59,7 @@ function MyMap(props) {
                 width={25}
                 anchor={[35.6892, 51.3890]} 
                 color={color} 
-                onClick={() => props.returnData(require(".\\img\\img_girl2.jpg").default)}
+                onClick={() => props.returnData(require("./img/img_girl2.jpg"))}
             />
             <Marker
                 width={25}
@@ -57,7 +67,7 @@ function MyMap(props) {
                 color={color}
                 onClick={() => {
                     downloader("2021_10_11__13_57_55");
-                    props.returnData(require(".\\img\\img1.png").default)
+                    props.returnData(require("./img/img1.png"))
                 }}
             />
             <Marker
