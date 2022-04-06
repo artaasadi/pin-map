@@ -19,13 +19,12 @@ function App() {
         </Routes>
       </Router>
       <div style={{width:'100%'}}>
-        <div style={{float:'left',width:'25%', color:'#FFF'}}>
+        <div style={{float:'left',width:'20%', color:'#FFF'}}>
           <div style={{float:'top', width:'100%'}}>
             <img src={(location)} style={{width:'100%'}}/>
-            <p style={{color:"#000"}}>{location}</p>
           </div>
         </div>
-        <div style={{float:'left',width:'75%',height:'100vh'}}>
+        <div style={{float:'left',width:'80%',height:'100vh'}}>
           <MyMap returnData = {setData}/>
         </div>
       </div>

@@ -2,11 +2,13 @@ import React, {useState} from 'react';
 import {Map, Marker} from 'pigeon-maps';
 import AWS from 'aws-sdk';
 import { saveAs } from "file-saver";
+import locations from "./locations/data.json";
 
 function MyMap(props) {
     const [center, setCenter] = useState([35.6892, 51.3890]);
     const [zoom, setZoom] = useState(11);
     const [hue, setHue] = useState(0);
+
     const color = `hsl(${hue % 360}deg 39% 70%)`;
     const config = {
         'accessKeyId' : 'd38c5e13-0042-4fe9-8f83-43bb4c108527',
@@ -22,28 +24,33 @@ function MyMap(props) {
 
     AWS.config.update(config);
     const downloader = (pic_name) => {
+        console.log(pic_name)
         const s3 = new AWS.S3();
         const params = {
             Bucket: 'aaic',
-            Key: `${pic_name}.jpg`,
+            Key: `${pic_name}`,
         };
-        const address = `./img/${pic_name}.jpg`;
+        const address = `./img/${pic_name}`;
         s3.getObject(params, function (err, data) {
             if (err != null) {
                 console.log('error :', err)
             }
-            //downloadFile(url, pic_name)
+
             console.log(data);
             let blob=new Blob([data.Body], {type: data.ContentType});
             let link=document.createElement('a');
             link.href=window.URL.createObjectURL(blob);
             link.download=address;
-            link.dir=address;
             link.click();
-            //props.returnData(require(address).default)
+            //props.returnData(require("/img_2021_10_11__13_57_55.jpg"))
         })
-
     }
+
+    let locationsList = []
+    for (let l in locations){
+        locationsList.push(locations[l])
+    }
+
     return (
         <Map 
         width={'100%'}
@@ -79,8 +86,23 @@ function MyMap(props) {
 
                 }}
             />
+            {locationsList.map(function(l){
+                return(
+                    <Marker
+                        width={25}
+                        anchor={[l["geo"]["latitude"], l["geo"]["longitude"]]}
+                        color={color}
+                        onClick={() => {
+                            //downloader(l["picLocation"].split('/')[1]);
+
+                        }}
+                    />
+                )
+            })}
         </Map>
+
     )
 }
+
 
 export default MyMap
